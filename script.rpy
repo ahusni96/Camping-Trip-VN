@@ -4,40 +4,43 @@
 # Title: Camping Trip
 
 # Characters
-define me = Character("Me", kind=nvl)
-define may = Character("May", kind=nvl)
-define amy = Character("Amy", kind=nvl)
+define me = Character("Me", kind=nvl, color="#dc143c")
+define may = Character("May", kind=nvl, color="#ffa500")
 define mark = Character("Mark", kind=nvl)
 
 # Other variables
 define menu = nvl_menu
 define narrator = nvl_narrator
 
-define solo = False
-
 define introversion = 3
-define perceiving = False
+define judging = False
 
-define location = ""
+# Story Flags (if needed)
+define missing = False
 
-# Cognitive Functions
-define Si = False   # Introverted Sensing
-define Se = False   # Extraverted Sensing
+# Personality Flags
+define Fi = False
+define Se = False
+define Ti = False
+define Ne = False
 
-define Ni = False   # Introverted Intuition
-define Ne = False   # Extraverted Intuition
-
-define Ti = False   # Introverted Thinking
-define Te = False   # Extraverted Thinking
-
-define Fi = False   # Introverted Feeling
-define Fe = False   # Extraverted Feeling
+define Fe = False
+define Si = False
+define Te = False
+define Ni = False
 
 # Endgame results
-define Primary = ""     # Primary Function
-define Auxiliary = ""   # Secondary Function
+define Dominant = ""
+define Auxiliary = ""
+define Tertiary = ""
+define Inferior = ""
 
-define Result = ""
+define Result = "" # Four letter combination
+
+init:
+    image black = Solid((0, 0, 0, 255))
+    image white = Solid((255, 255, 255, 255))
+    image grey = Solid((128, 128, 128, 255))
 
 init python:
     # config.empty_window = nvl_show_core
@@ -56,42 +59,62 @@ label start:
 
 label common:
 
+    scene black with dissolve
+    show text "Part 1 \n\t Memories" with Pause(1.5) and easeinleft
+    scene black with dissolve
+
+    nvl clear
+
     "The weekend came, I planned to stay at home and do some house cleaning."
     "While cleaning, I found some old camping equipment that was tucked away in a corner."
-    "I take the equipments out to check if it can still be used or not." 
-    "While checking, a nostalgic feeling came back to me."
+    "I take the equipments out to check if it can still be used or not."
     
-    "Seems like it can still be used, nice!"
-    
-    "I take the equipment out from the store and started cleaning it."
-    "I should try camping again."
-    "But when?"
-
     menu:
-        "I should go camping tomorrow.":
+        "Imagine the memories.":    # Si
+
+            "I close my eyes and let my memories came back."
+            "I can feel the surrounding like the slow breeze of the wind carrying the smell of meat cooking nearby, and the sounds of birds chirping away on the trees."
+            $ Si = True
+
+        "Search for pictures.":    # Se
+
+            "I search around the store for old albums."
+            "Looking at the pictures, I remember the moments when I went camping with my family."
+            "The funny expressions that they make, and the beautiful scenary kept in the photo."
+            $ Se = True
+
+    "So I decide that I want to relive those moments."
+    "I take the equipments out from the store and start cleaning it."
+
+    nvl clear
+
+    "I want to go camping, but when?"
+    menu:
+        "I should go camping tomorrow.":    # Judger
+            $ judging = False
             call .tomorrow
         
-        "I should go camping next week":
+        "I should go camping next week":    # Perceiver
+            $ judging = True
             call .next_week
     
-    "But before doing anything, I need to figure out where I should go."
-
+    "And where should I go?"
     menu:
         "A less crowded location.":
-
-            $ introversion += 1
 
             "There is a place near a lake outside of town that I usually go when I was little."
             "Usually the place is empty as it is not a famous location."
             "It should be a good place to calm down even though it lacks some facilities"
+            $ introversion += 1
 
         "A famous location.":
-
-            $ introversion -= 1
 
             "There is a place just outside of town that has just recently opened."
             "The facilities there are great by looking at the reviews of the place."
             "It should be okay for me even if there are a lot of people."
+            $ introversion -= 1
+    
+    call .preparation
     
     jump camp
 
@@ -99,70 +122,311 @@ label common:
 
 label .tomorrow:
 
-    $ perceiving = True
-
     "I can camp tomorrow, since I don't have anything to do."
-    "Should I ask somebody to join me?"
+    "Should I ask somebody to join me though?"
 
     menu:
         "Go solo.":
 
+            call .solo
             $ introversion += 1
-            $ solo = True
 
         "Ask your close friends":
 
+            call .friends
             $ introversion -= 1
-            $ solo = False
 
     return
 
 label .next_week:
 
-    $ perceiving = False
-
     "I need time to prepare some stuff before going on a trip."
     "Next week will probably be okay if I can manage everything well."
-    "Should I ask someone to join me?"
+    "Should I ask someone to join me though?"
 
     menu:
         "Go solo.":
 
             $ introversion += 1
-            $ solo = True
+            call .solo
 
         "Ask your close friends":
 
             $ introversion -= 1
-            $ solo = False
+            call .friends
+
+    return
+
+label .preparation:
+
+    if judging:
+        me "Okay, what should I prepare first?"
+        "Since it has been a while, I need to do some research to find more information on camping."
+        ".   .   ."
+        "After a few hours researching, I have come out with a checklist of things to bring."
+
+    else:
+        "I'll focus on the important things first."
+
+    "I take a look again at the camping equipment to make sure that everything is good, and continue on preparing for other stuffs."
 
     return
 
 label .solo:
 
     "I think I will be okay on my own."
+    "It's not that I don't like anyone to join."
+    "It's just my personal preference."
+    "And this is also a good time to laid back and relax on my own accord."
 
     return
 
 label .friends:
 
-    "I "
+    "I call some of my best friends and asked them if they can join me or not."
+    "First, I call May and ask her whether she wants to join or not."
+    ".  .   ."
+
+    # Can add the conversation if you're able to
+
+    "After that, I call Mark to ask the same thing."
+    ".  .   ."
+
+    "Unfortunately, both of them are unable to join the trip because they are busy with work."
+    "It means that I have to go alone."
 
     return
 
 #========== Camping Trip Start ==========#
 label camp:
-    "Test before camp"
 
-    if  solo:
+    nvl clear
 
-        call .solo
+    scene black with dissolve
+    show text "Part 2 \n\t The Day Arrives!" with Pause(1.5)
+    scene black with dissolve
+
+    nvl clear
+
+    "\"Ring, ring, ring!\", the loud noise of my alarm breaks me out of my slumber."
+    "It is still early, but I have to get up and ready myself"
+    "I get out of bed and look out the window."
+    "It's still dark outside."
+    "I take my phone and start checking the weather prediction for today and tomorrow."
+    me "Nice everything is good."
+    ".   .   ."
+    
+    if judging:
+        "Checking the list again, I make sure to not forget anything behind."
+        $ missing = False
+    else:
+        "Since, I didn't make any plans other than what I did yesterday, I just take everything important and will buy anything that I miss later."
+        $ missing = True
+
+    "I leave my home at around eight in the morning and start moving to my destination with my trusty bike."
+    me "It has been a while. Hope that I can make it without any issues."
+
+    ".   .   ."
+
+    "Following the main route, I've noticed that the scenary looks familiar somehow."
+    "I look around while cycling."
+
+    "I noticed that the landscape around here have changed quite a bit since the last time I came here."
+    menu:
+        "Recall memories.":    # Si
+            "I recall back some memories when I was a child."
+            "The sensation that I take in during the journey is still the same as it was."
+            $ Si = True
+        "Take in the view.":     # Se
+            "I stop by a location where people stopped to take in the view."
+            "The view of the mountains from here is a sight to behold."
+            "After that brief rest, I continued on with my journey."
+            $ Se = True
+    
+    # =========== At Camping Ground (Noon) ========== #
+
+    nvl clear
+
+    scene black with dissolve
+    show text "Camping Ground (Noon)" with Pause(1.5)
+    scene black with dissolve
+
+    nvl clear 
+
+    "I arrived at the camping ground before noon."
+    "I check in with the camping lodge before searching for a place to set up camp."
+    ".   .   ."
+    
+    # Note: Find a hobby for introvert / extrovert
+    # This is only for storytelling purpose
+    "After setting the camp up, I sit at my chair and do something"
+
+    # =========== At Camping Ground (Evening) ========== #
+
+    nvl clear
+
+    scene black with dissolve
+    show text "Camping Ground (Evening)" with Pause(1.5)
+    scene black with dissolve
+
+    nvl clear 
+
+    "Evening arrives, I see that there are some other campers nearby starting to prepare for the night."
+    me "I should follow suit."
+
+    # Note: This is for storytelling point
+    # Consequence for preparing for camping trip
+    
+    if not missing:
+        "My preparation for the night was done in a short time."
+    else:
+        "Well I forgot to bring my firewood."
+        me "Guess I'll have to find some woods nearby."
+        "And I quickly went out for wood gathering."
+        ".   .   ."
+        "I managed to finish set up my campfire as the sun begins to fall."
+
+    "Now I need to start making dinner for myself."
+    "While preparing dinner, I see a group of students that seems like they are unable to light up their fire."
+
+    menu:
+        "Help them.":   # Extraverted
+            "I bring some fire starters and walk towards their camp."
+            "I slowly approach them."
+            me "You guys look troubled. Is there any problem?"
+
+        "Observe them":   # Introverted
+            "I continue my observation from afar."
+            "I avert my eyes quickly."
+            "But one of them apparently saw me looking at them, and came to me."
+            may "Sorry for disturbing, can I ask something?"
+            me "Yes you can, is there any problem?"
+
+    may "Our fire won't start, and we have used all of our firestarters."
+    me "Let me see."
+
+    # Information gathering
+    if judging:
+        menu:
+            "From experience.":    # Si
+                "From what I remember, wood is hard to burn when it is wet."
+                "And right now, it is off-season."
+                me "So, the wood might be wet."
+                $ Si = True
+            
+            "Make a guess.":    # Ni
+                me "I'm guessing that the wood could be wet as it is off-season right now."
+                $ Ni = True
+
+    else:
+        menu:
+            "Look at the wood.":    # Se
+                "I take a log from a bundle that they have collected to inspect it."
+                me "It looks like the log is kinda wet."
+                $ Se = True
+            
+            "Think possible reasons.":    # Ne
+                "I think about a few reasons."
+                "Maybe the wood is wet?"
+                "Or that wood type is hard to catch on fire?"
+                "I take a closer look at the wood."
+                me "It's wet."
+                $ Ne = True
+
+    me "Did you pick the wood yourself?"
+    may "Yes we did."
+    may "Do we need to collect some wood now?"
+    "She sounds worried."
+
+    # Decision making
+    if judging:
+        menu:
+            "A":    # Fe
+                "a"
+            "B":    # Te
+                "b"
     
     else:
+        menu:
+            "C":    # Fi
+                "c"
+            "D":    # Ti
+                "d"
 
-        call .friends
 
-    "Test after camp"
+    "It looks like the fire problem was solved."
+    "I continue working on my dinner."
+
+    # =========== At Camping Ground (Night) ========== #
+
+    nvl clear
+
+    scene black with dissolve
+    show text "Camping Ground (Night)" with Pause(1.5)
+    scene black with dissolve
+
+    nvl clear
+
+    "The moon shines bright, as it is full moon tonight."
+    "Siting at my chair I begin eating my simple dinner."
+
+    if not missing:
+        "Tonight's dinner is a fancy one."
+        "I manage to make a simple spaghetti, with the ingredients that I brought from home."
+    else:
+        "Tonight's dinner is a simple one."
+        "I bought some cup noodles from a store on my way here earlier."
+        "Although simple, it is satisfying enough."
+
+    "A female student from the group earlier came with a plate in her hand."
+    may "Thank you for your help earlier."
+    may "Here take this food as an appreciation gift."
+    "In her hands there are some grilled meat."
+    me "It's not a big deal, but thank you."
+    may "You're welcome."
+    "She bowed as she said that."
+    "And leave while waving her hands."
+
+    # Should probably add more.
+
+    "When I've finished my dinner. I sit back against my chair and look towards the mountain laying right in front of me."
+
+    # Note: Can create a situation about self-reflection. Focus on intutive.
+
+    "After a while, my eyelids became heavy, signaling that it is time for some shut-eye."
+    "I get up from my chair, enter my tent, slide into my sleeping bag and close my eyes."
+    ".   .   ."
+    "I wake up early, with the help of my phone's alarm."
+    "I want to watch the sunrise today."
+    "And also get some breakfast ready."
+
+    # =========== At Camping Ground (Morning) ========== #
+
+    nvl clear
+
+    scene black with dissolve
+    show text "Camping Ground (Morning)" with Pause(1.5)
+    scene black with dissolve
+
+    nvl clear
+
+    "The sun starts peeking out behind the hill at around six in the morning."
+
+    ".   .   ."
+
+    # Insert moments of awe here, LOL
+
+    "After having breakfast I start packing my stuff and cleaning the camping area."
+
+    ".   .   ."
+
+    "Finish packing around noon. Visit the lodge for checkout and went back to civilization."
+
+    # Add after story?
+
+    ".:. The END"
+
+    # End of Story
 
     jump end
 
@@ -170,20 +434,182 @@ label camp:
 
 label .solo:
 
-    "In solo."
+    # ===== Dominant Function ===== #
+    # Determining the Dominant Cognitive Function of the player
+    if judging:
+        if introversion > 3:         # Introvert Judging
+            call .A
+        else:                        # Extravert Judging
+            call .B
+    else:
+        if introversion > 3:         # Introvert Perceiving
+            call .C
+        else:                        # Extravert Perceiving
+            call .D
+
+    # ===== Secondary Function ===== #
+    # Check Dominant Cognitive Function then direct to next situation to determine Auxiliary Function
+
+    if Si or Ni:
+        call .B
+
+    elif Fe or Te:
+        call .A
+
+    elif Fi or Ti:
+        call .D
+
+    elif Se or Ne:
+        call .C
 
     return
 
-label .friends:
+#========== Situations to Determine Functions ==========#
 
-    "In group."
+label .A:          # Si vs Ni
+    menu:
+        "Choice for Si":
+            if Dominant is "":
+                $ Dominant = "Si"
+                $ Si = True
+            else:
+                $ Auxiliary = "Si"
+        
+        "Choice for Ni":
+            if Dominant is "":
+                $ Dominant = "Ni"
+                $ Ni = True
+            else:
+                $ Auxiliary = "Ni"
+            
 
     return
 
+label .B:          # Fe vs Te
+    menu:
+        "Choice for Fe":
+            if Dominant is "":
+                $ Dominant = "Fe"
+                $ Fe = True
+            else:
+                $ Auxiliary = "Fe"
+            
+        "Choice for Te":
+            if Dominant is "":
+                $ Dominant = "Te"
+                $ Te = True
+            else:
+                $ Auxiliary = "Te"
+            
+
+    return
+
+label .C:          # Fi vs Ti
+    menu:
+        "Choice for Fi":
+            if Dominant is "":
+                $ Dominant = "Fi"
+                $ Fi = True
+            else:
+                $ Auxiliary = "Fi"
+            
+        "Choice for Ti":
+            if Dominant is "":
+                $ Dominant = "Ti"
+                $ Ti = True
+            else:
+                $ Auxiliary = "Ti"
+            
+
+    return
+
+label .D:          # Se vs Ne
+    menu:
+        "Choice for Se":
+            if Dominant is "":
+                $ Dominant = "Se"
+                $ Se = True
+            else:
+                $ Auxiliary = "Se"
+            
+        "Choice for Ne":
+            if Dominant is "":
+                $ Dominant = "Ne"
+                $ Ne = True
+            else:
+                $ Auxiliary = "Ne"
+            
+
+    return
 
 #========== Camping Trip End ==========#
+# Use all information to determine the four letter personality of the player.
 label end:
 
-    "The END"
+    nvl clear
+
+    call camp.solo
+
+    call .conclude
+
+    me "Result: [Result]"
+    me "Dominant: [Dominant]"
+    me "Auxiliary: [Auxiliary]"
+
+    return
+
+label .conclude:
+
+    if not judging:
+
+        if (Dominant == "Fi") and (Auxiliary == "Ne"):
+            $ Result = "INFP"
+        
+        elif (Dominant == "Fi") and (Auxiliary == "Se"):
+            $ Result = "ISFP"
+
+        elif (Dominant == "Se") and (Auxiliary == "Fi"):
+            $ Result = "ESFP"
+        
+        elif (Dominant == "Se") and (Auxiliary == "Ti"):
+            $ Result = "ESTP"
+
+        elif (Dominant == "Ti") and (Auxiliary == "Se"):
+            $ Result is "ISTP"
+
+        elif (Dominant == "Ti") and (Auxiliary == "Ne"):
+            $ Result = "INTP"
+
+        elif (Dominant == "Ne") and (Auxiliary == "Ti"):
+            $ Result = "ENTP"
+
+        elif (Dominant == "Ne") and (Auxiliary == "Fi"):
+            $ Result = "ENFP"
+
+    else:
+
+        if (Dominant == "Fe") and (Auxiliary == "Ni"):
+            $ Result = "ENFJ"
+        
+        elif (Dominant == "Fe") and (Auxiliary == "Si"):
+            $ Result = "ESFJ"
+
+        elif (Dominant == "Si") and (Auxiliary == "Fe"):
+            $ Result = "ISFJ"
+
+        elif (Dominant == "Si") and (Auxiliary == "Te"):
+            $ Result = "ISTJ"
+
+        elif (Dominant == "Te") and (Auxiliary == "Si"):
+            $ Result = "ESTJ"
+
+        elif (Dominant == "Te") and (Auxiliary == "Ni"):
+            $ Result = "ENTJ"
+
+        elif (Dominant == "Te") and (Auxiliary == "Te"):
+            $ Result = "INTJ"
+
+        elif (Dominant == "Ni") and (Auxiliary == "Fe"):
+            $ Result = "INFJ"
 
     return
