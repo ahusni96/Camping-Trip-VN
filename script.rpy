@@ -39,12 +39,10 @@ define Result = "" # Four letter combination
 
 init:
     image black = Solid((0, 0, 0, 255))
-    image white = Solid((255, 255, 255, 255))
-    image grey = Solid((128, 128, 128, 255))
     image green = Solid((75, 139, 59, 255))
 
 init python:
-    # config.empty_window = nvl_show_core
+    config.empty_window = nvl_show_core
     config.window_hide_transition = None
     config.window_show_transition = None
 
@@ -61,7 +59,7 @@ label start:
 label common:
 
     scene black with dissolve
-    show text "Part 1 \n\t Memories" with Pause(1.5) and easeinleft
+    show text "Part 1 \n\t Memories" with Pause(3)
     scene black with dissolve
 
     scene green with dissolve
@@ -97,21 +95,10 @@ label common:
             $ judging = True
             call .next_week
     
-    "And where should I go?"
-    menu:
-        "A less crowded location.":
-
-            "There is a place near a lake outside of town that I usually go when I was little."
-            "Usually the place is empty as it is not a famous location."
-            "It should be a good place to calm down even though it lacks some facilities"
-            $ introversion += 1
-
-        "A famous location.":
-
-            "There is a place just outside of town that has just recently opened."
-            "The facilities there are great by looking at the reviews of the place."
-            "It should be okay for me even if there are a lot of people."
-            $ introversion -= 1
+    "As for the location."
+    "There is a place near a lake outside of town that I usually go when I was little."
+    "Usually the place is empty as it is not a famous location."
+    "It should be a good place to calm down even though it lacks some facilities."
     
     call .preparation
     
@@ -202,7 +189,7 @@ label camp:
     nvl clear
 
     scene black with dissolve
-    show text "Part 2 \n\t The Day Arrives!" with Pause(1.5)
+    show text "Part 2 \n\t The Day Arrives!" with Pause(3)
     scene black with dissolve
 
     scene green with dissolve
@@ -213,7 +200,8 @@ label camp:
     "It's still dark outside."
     "I take my phone and start checking the weather prediction for today and tomorrow."
     me "Nice everything is good."
-    ".   .   ."
+    
+    nvl clear
     
     if judging:
         "Checking the list again, I make sure to not forget anything behind."
@@ -225,7 +213,7 @@ label camp:
     "I leave my home at around eight in the morning and start moving to my destination with my trusty bike."
     me "It has been a while. Hope that I can make it without any issues."
 
-    ".   .   ."
+    nvl clear
 
     "Following the main route, I've noticed that the scenary looks familiar somehow."
     "I look around while cycling."
@@ -247,13 +235,14 @@ label camp:
     nvl clear
 
     scene black with dissolve
-    show text "Camping Ground (Noon)" with Pause(1.5)
+    show text "Camping Ground (Noon)" with Pause(3)
     scene black with dissolve
 
     scene green with dissolve
 
     "I arrived at the camping ground before noon."
     "I check in with the camping lodge before searching for a place to set up camp."
+    
     ".   .   ."
     
     # Note: Find a hobby for introvert / extrovert
@@ -265,7 +254,7 @@ label camp:
     nvl clear
 
     scene black with dissolve
-    show text "Camping Ground (Evening)" with Pause(1.5)
+    show text "Camping Ground (Evening)" with Pause(3)
     scene black with dissolve
 
     scene green with dissolve
@@ -293,13 +282,18 @@ label camp:
             "I bring some fire starters and walk towards their camp."
             "I slowly approach them."
             me "You guys look troubled. Is there any problem?"
+            $ introversion -= 1
 
         "Observe them":   # Introverted
             "I continue my observation from afar."
+            
+            ".   .   ."
+
             "I avert my eyes quickly."
             "But one of them apparently saw me looking at them, and came to me."
             may "Sorry for disturbing, can I ask something?"
             me "Yes you can, is there any problem?"
+            $ introversion += 1
 
     may "Our fire won't start, and we have used all of our firestarters."
     me "Let me see."
@@ -341,19 +335,40 @@ label camp:
     if judging:
         menu:
             "Share some wood.":    # Fe
-                "Fe answer"
+                "The right thing to do for now is to help them."
+                me "Wait here."
+                "I go back to my camp and take a few woods."
+                me "This should be enough."
+                "I hurry back to the group."
+                me "Here take this."
+                "I hold out the wood that I was carrying."
+                may "Thank you, but don't you need it also?"
+                me "Don't worry, I still have plenty at camp."
                 $ Fe = True
             "Find some wood.":    # Te
-                "Te answer"
+                me "The sun is still up, should be enough time to search for more wood."
+                may "Could you tell us how to tell the wood is dry or not?"
+                "I give them a bit of advice on finding the dry wood."
+                may "Ok got it."
                 $ Te = True
     
     else:
         menu:
             "Share some wood.":    # Fi
-                "Fi answer"
+                "After considering the options that I have, I've decided to share some of my wood."
+                me "Wait here."
+                "I go back to my camp and take a few woods."
+                me "This should be enough."
+                "I hurry back to the group."
+                me "Here take this."
+                "I hold out the wood that I was carrying."
+                may "Thank you, but don't you need it also?"
+                me "Don't worry, I still have plenty at camp."
                 $ Fi = True
             "Find some wood.":    # Ti
-                "Ti answer"
+                me "The sun is still up, should be enough time to search for more wood."
+                may "Could you tell us how to tell the wood is dry or not?"
+                "I give them a bit of advice on finding the dry wood."
                 $ Ti = True
 
 
@@ -365,7 +380,7 @@ label camp:
     nvl clear
 
     scene black with dissolve
-    show text "Camping Ground (Night)" with Pause(1.5)
+    show text "Camping Ground (Night)" with Pause(3)
     scene black with dissolve
 
     scene green with dissolve
@@ -398,21 +413,20 @@ label camp:
 
     "After a while, my eyelids became heavy, signaling that it is time for some shut-eye."
     "I get up from my chair, enter my tent, slide into my sleeping bag and close my eyes."
-    ".   .   ."
-    "I wake up early, with the help of my phone's alarm."
-    "I want to watch the sunrise today."
-    "And also get some breakfast ready."
-
+    
     # =========== At Camping Ground (Morning) ========== #
 
     nvl clear
 
     scene black with dissolve
-    show text "Camping Ground (Morning)" with Pause(1.5)
+    show text "Camping Ground (Morning)" with Pause(3)
     scene black with dissolve
 
     scene green with dissolve
 
+    "I wake up early, with the help of my phone's alarm."
+    "I want to watch the sunrise today."
+    "And also get some breakfast ready."
     "The sun starts peeking out behind the hill at around six in the morning."
 
     ".   .   ."
@@ -442,24 +456,12 @@ label end:
     nvl clear
 
     call .primary
-
     call .secondary
-
     call .conclude
 
     me "Result: [Result]"
     me "Dominant: [Dominant]"
     me "Auxiliary: [Auxiliary]"
-
-    me "Fi = [Fi]"
-    me "Fe = [Fe]"
-    me "Ti = [Ti]"
-    me "Te = [Te]"
-
-    me "Se = [Se]"
-    me "Si = [Si]"
-    me "Ne = [Ne]"
-    me "Ni = [Ni]"
 
     return
 
@@ -467,103 +469,59 @@ label .primary:
 
     # ===== Dominant Function ===== #
     # Determining the Dominant Cognitive Function of the player
-    if judging:
-        if introversion > 3:         # Introvert Judging
-            call .A
-        else:                        # Extravert Judging
-            call .B
-    else:
-        if introversion > 3:         # Introvert Perceiving
-            call .C
-        else:                        # Extravert Perceiving
-            call .D
+    if Dominant == "":
+        if judging:
+            if introversion > 3:         # Introvert Judging
+                if Si:
+                    $ Dominant = "Si"
+                elif Ni:
+                    $ Dominant = "Ni"
+            else:                        # Extravert Judging
+                if Fe:
+                    $ Dominant = "Fe"
+                elif Te:
+                    $ Dominant = "Te"
+        else:
+            if introversion > 3:         # Introvert Perceiving
+                if Fi:
+                    $ Dominant = "Fi"
+                elif Ti:
+                    $ Dominant = "Ti"
+            else:                        # Extravert Perceiving
+                if Se:
+                    $ Dominant = "Se"
+                elif Ne:
+                    $ Dominant = "Ne"
 
     return
 
 label .secondary:
     # ===== Secondary Function ===== #
     # Check Dominant Cognitive Function then direct to next situation to determine Auxiliary Function
+    if Dominant != "" and Auxiliary == "":
+        if Si or Ni:
+            if Fe:
+                $ Auxiliary = "Fe"
+            elif Te:
+                $ Auxiliary = "Te"
+        
+        elif Fe or Te:
+            if Si:
+                $ Auxiliary = "Si"
+            elif Ni:
+                $ Auxiliary = "Ni"
 
-    if Si or Ni:
-        if Si:
-            $ Auxiliary = "Si"
-        elif Ni:
-            $ Auxiliary = "Ni"
-    
-    elif Fe or Te:
-        call .A
+        elif Fi or Ti:
+            if Se:
+                $ Auxiliary = "Se"
+            elif Ne:
+                $ Auxiliary = "Ne" 
 
-    elif Fi or Ti:
-        call .D
-
-    elif Se or Ne:
-        call .C
-
-    return
-
-#========== Situations to Determine Functions ==========#
-
-label .A:          # Si vs Ni
-    
-    if Dominant is "":
-        if Si:
-            $ Dominant = "Si"
-        elif Ni:
-            $ Dominant = "Ni"
-
-    elif Dominant is not "":
-        if Si:
-            $ Auxiliary = "Si"
-        elif Ni:
-            $ Auxiliary = "Ni"
-
-    return
-
-label .B:          # Fe vs Te
-
-    if Dominant is "":
-        if Fe:
-            $ Dominant = "Fe"
-        elif Te:
-            $ Dominant = "Te"
-
-    elif Dominant is not "":
-        if Fe:
-            $ Auxiliary = "Fe"
-        elif Te:
-            $ Auxiliary = "Te"
-
-    return
-
-label .C:          # Fi vs Ti
-
-    if Dominant is "":
-        if Fi:
-            $ Dominant = "Fi"
-        elif Ti:
-            $ Dominant = "Ti"
-
-    elif Dominant is not "":
-        if Fi:
-            $ Auxiliary = "Fi"
-        elif Ti:
-            $ Auxiliary = "Ti"
-
-    return
-
-label .D:          # Se vs Ne
-
-    if Dominant is "":
-        if Se:
-            $ Dominant = "Se"
-        elif Ne:
-            $ Dominant = "Ne"
-
-    elif Dominant is not "":
-        if Se:
-            $ Auxiliary = "Se"
-        elif Ti:
-            $ Auxiliary = "Ne" 
+        elif Se or Ne:
+            if Fi:
+                $ Auxiliary = "Fi"
+            elif Ti:
+                $ Auxiliary = "Ti"
 
     return
 

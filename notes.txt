@@ -9,10 +9,10 @@
 
 Progress
 1. Draft                | done
-2. Choices              |
+2. Choices              | 
 3. Grammar check        |
 4. Flow check           |
-5. Functionalities      |
+5. Functionalities      | done
 6. Flags                | done
 
 ==================================================
