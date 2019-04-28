@@ -89,18 +89,18 @@ label common:
     menu:
         "I should go camping tomorrow.":    # Judger
             $ judging = False
-            call common.tomorrow
+            call .tomorrow
         
         "I should go camping next week":    # Perceiver
             $ judging = True
-            call common.next_week
+            call .next_week
     
     "As for the location."
     "There is a place near a lake outside of town that I usually go when I was little."
     "Usually the place is empty as it is not a famous location."
     "It should be a good place to calm down even though it lacks some facilities."
     
-    call common.preparation
+    call .preparation
     
     jump camp
 
@@ -114,12 +114,12 @@ label .tomorrow:
     menu:
         "Go solo.":
 
-            call common.solo
+            call .solo
             $ introversion += 1
 
         "Ask your close friends":
 
-            call common.friends
+            call .friends
             $ introversion -= 1
 
     return
@@ -134,12 +134,12 @@ label .next_week:
         "Go solo.":
 
             $ introversion += 1
-            call common.solo
+            call .solo
 
         "Ask your close friends":
 
             $ introversion -= 1
-            call common.friends
+            call .friends
 
     return
 
@@ -194,7 +194,7 @@ label camp:
 
     scene green with dissolve
 
-    "\"Ring, ring, ring!\" the loud noise of my alarm breaks me out of my slumber."
+    "\"Ring, ring, ring!\", the loud noise of my alarm breaks me out of my slumber."
     "It is still early, but I have to get up and ready myself"
     "I get out of bed and look out the window."
     "It's still dark outside."
@@ -455,9 +455,9 @@ label end:
 
     nvl clear
 
-    call end.primary
-    call end.secondary
-    call end.conclude
+    call .primary
+    call .secondary
+    call .conclude
 
     me "Result: [Result]"
     me "Dominant: [Dominant]"
