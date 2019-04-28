@@ -2,18 +2,18 @@
 
 # Setting
 - Somewhere on earth
-- Off-season (Autumm to be precise)
+- wet-season
 - Location (Not detailed)
 
 ==================================================
 
 Progress
 1. Draft                | done
-2. Choices              | 
+2. Choices              |
 3. Grammar check        |
 4. Flow check           |
 5. Functionalities      |
-6. Flags                |
+6. Flags                | done
 
 ==================================================
 
@@ -21,8 +21,8 @@ Progress
 introversion: 3 situation, 1 not included in 'introversion' mark
 judging: 1 situation
 
-Fi/Fe:
-Ti/Te:
+Fi/Fe: 1 situation
+Ti/Te: 1 situation
 
-Se/Si: 3 situations
+Se/Si: 1 situations
 Ne/Ni: 1 situation

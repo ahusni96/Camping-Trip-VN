@@ -41,6 +41,7 @@ init:
     image black = Solid((0, 0, 0, 255))
     image white = Solid((255, 255, 255, 255))
     image grey = Solid((128, 128, 128, 255))
+    image green = Solid((75, 139, 59, 255))
 
 init python:
     # config.empty_window = nvl_show_core
@@ -63,7 +64,7 @@ label common:
     show text "Part 1 \n\t Memories" with Pause(1.5) and easeinleft
     scene black with dissolve
 
-    nvl clear
+    scene green with dissolve
 
     "The weekend came, I planned to stay at home and do some house cleaning."
     "While cleaning, I found some old camping equipment that was tucked away in a corner."
@@ -74,19 +75,17 @@ label common:
 
             "I close my eyes and let my memories came back."
             "I can feel the surrounding like the slow breeze of the wind carrying the smell of meat cooking nearby, and the sounds of birds chirping away on the trees."
-            $ Si = True
+            # $ Si = True
 
         "Search for pictures.":    # Se
 
             "I search around the store for old albums."
             "Looking at the pictures, I remember the moments when I went camping with my family."
             "The funny expressions that they make, and the beautiful scenary kept in the photo."
-            $ Se = True
+            # $ Se = True
 
     "So I decide that I want to relive those moments."
     "I take the equipments out from the store and start cleaning it."
-
-    nvl clear
 
     "I want to go camping, but when?"
     menu:
@@ -206,7 +205,7 @@ label camp:
     show text "Part 2 \n\t The Day Arrives!" with Pause(1.5)
     scene black with dissolve
 
-    nvl clear
+    scene green with dissolve
 
     "\"Ring, ring, ring!\", the loud noise of my alarm breaks me out of my slumber."
     "It is still early, but I have to get up and ready myself"
@@ -236,12 +235,12 @@ label camp:
         "Recall memories.":    # Si
             "I recall back some memories when I was a child."
             "The sensation that I take in during the journey is still the same as it was."
-            $ Si = True
+            # $ Si = True
         "Take in the view.":     # Se
             "I stop by a location where people stopped to take in the view."
             "The view of the mountains from here is a sight to behold."
             "After that brief rest, I continued on with my journey."
-            $ Se = True
+            # $ Se = True
     
     # =========== At Camping Ground (Noon) ========== #
 
@@ -251,7 +250,7 @@ label camp:
     show text "Camping Ground (Noon)" with Pause(1.5)
     scene black with dissolve
 
-    nvl clear 
+    scene green with dissolve
 
     "I arrived at the camping ground before noon."
     "I check in with the camping lodge before searching for a place to set up camp."
@@ -269,7 +268,7 @@ label camp:
     show text "Camping Ground (Evening)" with Pause(1.5)
     scene black with dissolve
 
-    nvl clear 
+    scene green with dissolve
 
     "Evening arrives, I see that there are some other campers nearby starting to prepare for the night."
     me "I should follow suit."
@@ -341,17 +340,21 @@ label camp:
     # Decision making
     if judging:
         menu:
-            "A":    # Fe
-                "a"
-            "B":    # Te
-                "b"
+            "Share some wood.":    # Fe
+                "Fe answer"
+                $ Fe = True
+            "Find some wood.":    # Te
+                "Te answer"
+                $ Te = True
     
     else:
         menu:
-            "C":    # Fi
-                "c"
-            "D":    # Ti
-                "d"
+            "Share some wood.":    # Fi
+                "Fi answer"
+                $ Fi = True
+            "Find some wood.":    # Ti
+                "Ti answer"
+                $ Ti = True
 
 
     "It looks like the fire problem was solved."
@@ -365,7 +368,7 @@ label camp:
     show text "Camping Ground (Night)" with Pause(1.5)
     scene black with dissolve
 
-    nvl clear
+    scene green with dissolve
 
     "The moon shines bright, as it is full moon tonight."
     "Siting at my chair I begin eating my simple dinner."
@@ -408,7 +411,7 @@ label camp:
     show text "Camping Ground (Morning)" with Pause(1.5)
     scene black with dissolve
 
-    nvl clear
+    scene green with dissolve
 
     "The sun starts peeking out behind the hill at around six in the morning."
 
@@ -432,7 +435,35 @@ label camp:
 
     return
 
-label .solo:
+#========== Camping Trip End ==========#
+# Use all information to determine the four letter personality of the player.
+label end:
+
+    nvl clear
+
+    call .primary
+
+    call .secondary
+
+    call .conclude
+
+    me "Result: [Result]"
+    me "Dominant: [Dominant]"
+    me "Auxiliary: [Auxiliary]"
+
+    me "Fi = [Fi]"
+    me "Fe = [Fe]"
+    me "Ti = [Ti]"
+    me "Te = [Te]"
+
+    me "Se = [Se]"
+    me "Si = [Si]"
+    me "Ne = [Ne]"
+    me "Ni = [Ni]"
+
+    return
+
+label .primary:
 
     # ===== Dominant Function ===== #
     # Determining the Dominant Cognitive Function of the player
@@ -447,12 +478,18 @@ label .solo:
         else:                        # Extravert Perceiving
             call .D
 
+    return
+
+label .secondary:
     # ===== Secondary Function ===== #
     # Check Dominant Cognitive Function then direct to next situation to determine Auxiliary Function
 
     if Si or Ni:
-        call .B
-
+        if Si:
+            $ Auxiliary = "Si"
+        elif Ni:
+            $ Auxiliary = "Ni"
+    
     elif Fe or Te:
         call .A
 
@@ -467,94 +504,66 @@ label .solo:
 #========== Situations to Determine Functions ==========#
 
 label .A:          # Si vs Ni
-    menu:
-        "Choice for Si":
-            if Dominant is "":
-                $ Dominant = "Si"
-                $ Si = True
-            else:
-                $ Auxiliary = "Si"
-        
-        "Choice for Ni":
-            if Dominant is "":
-                $ Dominant = "Ni"
-                $ Ni = True
-            else:
-                $ Auxiliary = "Ni"
-            
+    
+    if Dominant is "":
+        if Si:
+            $ Dominant = "Si"
+        elif Ni:
+            $ Dominant = "Ni"
+
+    elif Dominant is not "":
+        if Si:
+            $ Auxiliary = "Si"
+        elif Ni:
+            $ Auxiliary = "Ni"
 
     return
 
 label .B:          # Fe vs Te
-    menu:
-        "Choice for Fe":
-            if Dominant is "":
-                $ Dominant = "Fe"
-                $ Fe = True
-            else:
-                $ Auxiliary = "Fe"
-            
-        "Choice for Te":
-            if Dominant is "":
-                $ Dominant = "Te"
-                $ Te = True
-            else:
-                $ Auxiliary = "Te"
-            
+
+    if Dominant is "":
+        if Fe:
+            $ Dominant = "Fe"
+        elif Te:
+            $ Dominant = "Te"
+
+    elif Dominant is not "":
+        if Fe:
+            $ Auxiliary = "Fe"
+        elif Te:
+            $ Auxiliary = "Te"
 
     return
 
 label .C:          # Fi vs Ti
-    menu:
-        "Choice for Fi":
-            if Dominant is "":
-                $ Dominant = "Fi"
-                $ Fi = True
-            else:
-                $ Auxiliary = "Fi"
-            
-        "Choice for Ti":
-            if Dominant is "":
-                $ Dominant = "Ti"
-                $ Ti = True
-            else:
-                $ Auxiliary = "Ti"
-            
+
+    if Dominant is "":
+        if Fi:
+            $ Dominant = "Fi"
+        elif Ti:
+            $ Dominant = "Ti"
+
+    elif Dominant is not "":
+        if Fi:
+            $ Auxiliary = "Fi"
+        elif Ti:
+            $ Auxiliary = "Ti"
 
     return
 
 label .D:          # Se vs Ne
-    menu:
-        "Choice for Se":
-            if Dominant is "":
-                $ Dominant = "Se"
-                $ Se = True
-            else:
-                $ Auxiliary = "Se"
-            
-        "Choice for Ne":
-            if Dominant is "":
-                $ Dominant = "Ne"
-                $ Ne = True
-            else:
-                $ Auxiliary = "Ne"
-            
 
-    return
+    if Dominant is "":
+        if Se:
+            $ Dominant = "Se"
+        elif Ne:
+            $ Dominant = "Ne"
 
-#========== Camping Trip End ==========#
-# Use all information to determine the four letter personality of the player.
-label end:
-
-    nvl clear
-
-    call camp.solo
-
-    call .conclude
-
-    me "Result: [Result]"
-    me "Dominant: [Dominant]"
-    me "Auxiliary: [Auxiliary]"
+    elif Dominant is not "":
+        if Se:
+            $ Auxiliary = "Se"
+        elif Ti:
+            $ Auxiliary = "Ne" 
 
     return
 
